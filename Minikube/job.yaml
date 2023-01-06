@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: application
+spec:
+  template:
+    spec:
+      containers:
+      - name: application
+        image: amd64/application:latest
+        command: ["/bin/linux/amd64/application"]
+      restartPolicy: Never
+  backoffLimit: 4
