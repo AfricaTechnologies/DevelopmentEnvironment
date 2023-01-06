@@ -1,0 +1,64 @@
+name: Dart
+
+on:
+  push:
+    branches: [ "main" ]
+    
+  pull_request:
+    branches: [ "main" ]
+    
+  schedule:
+  - cron: "30 03 * * 1-5"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      
+    - name: Set up Dart
+      uses: dart-lang/setup-dart@v1.3
+      
+    - name: Analyze Source
+      run: dart analyze lib
+      
+    - name: Document Source
+      run: dart doc / --output /doc/api
+      
+    - name: Fix Source
+      run: dart fix lib --dry-run
+   
+    - name: Fix Source
+      run: dart fix lib --apply
+      
+    - name: Format Source 
+      run: dart format lib
+      
+    - name: Get Packages
+      run: dart pub get
+      
+    - name: Dependency Graph
+      run: dart pub deps
+      
+    - name: Upgrade Packages
+      run: dart pub upgrade
+      
+    - name: Run Main
+      run: dart run lib/main.dart
+      
+    - name: Run Test
+      run: dart test test/darttest.dart
+      
+    - name: Compile Source
+      run: dart compile exe lib/main.dart -o /bin/linux/dart_application
+      
+    - name: Build Docker Image
+      run: docker build ./ --file ./Dockerfile --tag amd64/dart_application:latest
+      
+    - name: Install Snapcraft
+      run: sudo snap install snapcraft --classic
+      
+    - name: Build Snap
+      run: snapcraft

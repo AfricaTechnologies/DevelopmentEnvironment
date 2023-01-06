@@ -1,0 +1,73 @@
+name: Flutter
+
+on:
+  push:
+    branches: [ "main" ]
+    
+  pull_request:
+    branches: [ "main" ]
+    
+  schedule:
+  - cron: "30 03 * * 1-5"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      
+    - name: Set up Dart
+      uses: dart-lang/setup-dart@v1.3
+      
+    - name: Install Flutter
+      run: sudo snap install flutter --classic
+      
+    - name: Analyze Source
+      run: flutter analyze lib
+      
+    - name: Fix Source
+      run: dart fix lib --dry-run
+   
+    - name: Fix Source
+      run: dart fix lib --apply
+      
+    - name: Format Source 
+      run: flutter format lib
+      
+    - name: Get Packages
+      run: flutter pub get
+      
+    - name: Dependency Graph
+      run: flutter pub deps
+      
+    - name: Upgrade Packages
+      run: flutter pub upgrade
+      
+    - name: Run Test
+      run: flutter test test/fluttertest.dart
+      
+    - name: Compile Source
+      run: flutter build aar lib/main.dart /bin/aar/flutter_application
+      
+    - name: Compile Source
+      run: flutter build apk lib/main.dart /bin/apk/flutter_application
+      
+    - name: Compile Source
+      run: flutter build appbundle lib/main.dart /bin/appbundle/flutter_application
+      
+    - name: Compile Source
+      run: flutter build bundle lib/main.dart /bin/bundle/flutter_application
+      
+    - name: Compile Source
+      run: flutter build linux lib/main.dart /bin/linux/flutter_application
+      
+    - name: Compile Source
+      run: flutter build web lib/main.dart /bin/web/flutter_application
+      
+    - name: Install Snapcraft
+      run: sudo snap install snapcraft --classic
+      
+    - name: Build Snap
+      run: snapcraft

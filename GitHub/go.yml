@@ -1,0 +1,99 @@
+name: Go
+
+on:
+  push:
+    branches: [ "main" ]
+    
+  pull_request:
+    branches: [ "main" ]
+    
+  schedule:
+  - cron: "30 03 * * 1-5"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+    
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+        
+    - name: Document Source
+      run: go doc ./
+      
+    - name: Environment Information
+      run: go env
+        
+    - name: Fix Source
+      run: go fix ./lib
+      
+    - name: Format Source
+      run: go fmt ./lib
+      
+    - name: Get Packages
+      run: go get
+      
+    - name: List Packages
+      run: go list
+      
+    - name: List Modules
+      run: go list -m
+      
+    - name: Download Modules
+      run: go mod download
+      
+    - name: Tidy Module
+      run: go mod tidy
+      
+    - name: Verify Module
+      run: go mod verify
+      
+    - name: Run Main
+      run: go run ./lib/main.go
+
+    - name: Run Test
+      run: go test ./test/gotest.go
+      
+    - name: Go Version
+      run: go version
+      
+    - name: Vet Source
+      run: go vet ./lib
+      
+    - name: Synchronize Workspace
+      run: go work sync
+      
+    - name: Use Workspace
+      run: go work use ./
+      
+    - name: Compile Source
+      run: GOOS=darwin GOARCH=amd64 go build -o ./bin/darwin/amd64/go_application ./lib/main.go
+      
+    - name: Compile Source
+      run: GOOS=darwin GOARCH=arm64 go build -o ./bin/darwin/arm64/go_application ./lib/main.go
+      
+    - name: Compile Source
+      run: GOOS=linux GOARCH=amd64 go build -o ./bin/linux/amd64/go_application ./lib/main.go
+    
+    - name: Compile Source
+      run: GOOS=linux GOARCH=arm64 go build -o ./bin/linux/arm64/go_application ./lib/main.go
+    
+    - name: Compile Source
+      run: GOOS=windows GOARCH=amd64 go build -o ./bin/windows/amd64/go_application.exe ./lib/main.go
+      
+    - name: Compile Source
+      run: GOOS=windows GOARCH=arm64 go build -o ./bin/windows/arm64/go_application.exe ./lib/main.go
+    
+    - name: Build Docker Image
+      run: docker build ./ --file ./Dockerfile --tag amd64/go_application:latest
+      
+    - name: Install Snapcraft
+      run: sudo snap install snapcraft --classic
+      
+    - name: Build Snap
+      run: snapcraft
