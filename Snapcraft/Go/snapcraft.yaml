@@ -1,0 +1,29 @@
+name: go_application-{name}    
+base: core20
+confinement: strict
+description: |
+  Go Application
+grade: stable
+icon:
+summary: Go
+version: 'latest'
+
+apps:
+  go_application-{name}:
+    command: bin/linux/amd64/go_application
+    environment:
+    extensions:
+    plugs:
+
+parts:
+  go_application-{name}:
+    build-packages:
+    build-snaps:
+      - go
+    go-importpath:
+    plugin: go 
+    source:
+    source-tag: 
+    source-type: git
+    stage-packages:
+    stage-snaps:
