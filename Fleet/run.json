@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "type": "go",
+            "name": "go_application",
+            "goExecPath": "/home/administrator/go/bin/go",
+            "buildParams": [
+                "/home/administrator/FleetProjects/go_application/lib/main.go",
+            ],
+        },
+    ]
+}

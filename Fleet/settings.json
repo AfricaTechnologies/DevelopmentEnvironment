@@ -1,0 +1,11 @@
+{
+    "editor.alwaysShowHorizontalScrollbar": true,
+    "editor.showFloatingDebugPanel": true,
+    "fus.sendAllowed": false,
+    "go.roots": [
+        {
+        "path": "/home/administrator/go",
+        "srcDir": "/home/administrator/go/src",
+        }
+    ],
+}
